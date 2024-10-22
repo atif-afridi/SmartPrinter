@@ -1,8 +1,14 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:printer_app/database/crud_widget.dart';
 import 'package:printer_app/database/printer_model.dart';
 import 'package:printer_app/widgets/print_photo.dart';
+import 'package:printer_app/widgets/print_web_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../connect_ui.dart';
 import '../database/app_database.dart';
@@ -147,6 +153,8 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
   String connectTitleText = '';
   bool isPrinterConnected = false;
 
+  Future<void>? _launched;
+
   void _setImageFileListFromFile(XFile? value) {
     _mediaFileList = value == null ? null : <XFile>[value];
     navigateToPhotoEditing(_mediaFileList!);
@@ -156,9 +164,28 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PrintPhotoWidget(
-                  title: "photo editing",
+            builder: (context) => PrintPhotoWidget.withPhotos(
+                  title: "Photo",
                   mediaFileList: mediaFileList,
+                )));
+  }
+
+  void navigateToPdfEditing(String pdfFilePath) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PrintPhotoWidget.withPdf(
+                  title: "Pdf",
+                  pdfFilePath: pdfFilePath,
+                )));
+  }
+
+  void navigateToWebPage(String buttonText) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PrintWebPageWidget.withWebPage(
+                  buttonText: buttonText,
                 )));
   }
 
@@ -213,6 +240,30 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
     // return connectedPrinterList;
   }
 
+  Future<void> _launchInBrowserView(Uri url) async {
+    if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  void _openPdf() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      // allowedExtensions: ['jpg', 'pdf', 'doc'],
+      allowedExtensions: <String>['pdf'],
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+
+      navigateToPdfEditing(file.path);
+      // it opens in new activity
+      // OpenFilex.open(file.path);
+    } else {
+      // User canceled the picker
+    }
+  }
+
   @override
   void initState() {
     // _validateUserInput();
@@ -250,6 +301,11 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
 
   @override
   Widget build(BuildContext context) {
+// onPressed calls using this URL are not gated on a 'canLaunch' check
+    // because the assumption is that every device can launch a web URL.
+    final Uri toLaunch =
+        Uri(scheme: 'https', host: 'www.google.com', path: 'headers/');
+
     return Stack(children: [
       bigCircle,
       twoCircles,
@@ -370,14 +426,23 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                               _onPickImage(ImageSource.gallery, context);
                               break;
                             case 1: // print document
-                              Navigator.push(
+                              /*
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const NotesView()),
                               );
+                            */
+
+                              _openPdf();
                               break;
-                            case 2: // print document
-                              Navigator.push(
+                            case 2: // print Web page
+                              // _launched = _launchInBrowserView(toLaunch);
+
+                              navigateToWebPage("Web Page");
+
+                              /*
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
@@ -386,6 +451,7 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                                 // alwaysLate();
                                 setState(() {});
                               });
+                            */
                               break;
                             default:
                           }

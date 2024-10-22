@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,11 +15,24 @@ import '../database/app_database.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class PrintPhotoWidget extends StatefulWidget {
-  const PrintPhotoWidget(
-      {super.key, required this.title, required this.mediaFileList});
-
+  // whats the usage of 'final' before data_type
   final String title;
-  final List<XFile> mediaFileList;
+  final List<XFile>? mediaFileList;
+  final String? pdfFilePath;
+
+  // Named constructor for photoList
+  const PrintPhotoWidget.withPhotos({
+    super.key,
+    required this.title,
+    required this.mediaFileList,
+  }) : pdfFilePath = null;
+
+  // Named constructor for pdfFilePath
+  const PrintPhotoWidget.withPdf({
+    super.key,
+    required this.title,
+    required this.pdfFilePath,
+  }) : mediaFileList = null;
 
   @override
   State<PrintPhotoWidget> createState() => _PrintPhotoWidgetState();
@@ -69,7 +83,7 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
   Future<void> _capturePng(BuildContext ctx) async {
     try {
       final doc = pw.Document();
-      var photoBytes = await File(widget.mediaFileList[0].path).readAsBytes();
+      var photoBytes = await File(widget.mediaFileList![0].path).readAsBytes();
       final pageFormat = PdfPageFormat.a4;
 
       print(MediaQuery.of(ctx).size.height);
@@ -105,10 +119,10 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
 
   Future<void> _cropImage() async {
     // if (_pickedFile != null) {
-    if (widget.mediaFileList.isNotEmpty) {
+    if (widget.mediaFileList != null && widget.mediaFileList!.isNotEmpty) {
       final croppedFile = await ImageCropper().cropImage(
         // sourcePath: _pickedFile!.path,
-        sourcePath: widget.mediaFileList[0].path,
+        sourcePath: widget.mediaFileList![0].path,
         compressFormat: ImageCompressFormat.jpg,
         compressQuality: 100,
         uiSettings: [
@@ -153,6 +167,36 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
     }
   }
 
+  PDFView _previewPDF(String path) {
+    return PDFView(
+      filePath: path,
+      fitEachPage: true,
+      enableSwipe: true,
+      swipeHorizontal: true,
+      autoSpacing: false,
+      pageFling: false,
+      backgroundColor: Colors.grey,
+      onRender: (_pages) {
+        setState(() {
+          // pages = _pages;
+          // isReady = true;
+        });
+      },
+      onError: (error) {
+        print(error.toString());
+      },
+      onPageError: (page, error) {
+        print('$page: ${error.toString()}');
+      },
+      onViewCreated: (PDFViewController pdfViewController) {
+        // _controller.complete(pdfViewController);
+      },
+      // onPageChanged: (int page, int total) {
+      //   print('page change: $page/$total');
+      // },
+    );
+  }
+
   Widget _image() {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -166,8 +210,9 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
         child: kIsWeb ? Image.network(path) : Image.file(File(path)),
       );
       // } else if (_pickedFile != null) {
-    } else if (widget.mediaFileList.isNotEmpty) {
-      final path = widget.mediaFileList[0].path;
+    } else if (widget.mediaFileList != null &&
+        widget.mediaFileList!.isNotEmpty) {
+      final path = widget.mediaFileList![0].path;
       return ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: 0.8 * screenWidth,
@@ -195,7 +240,8 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
                 children: [
                   // app bar
                   Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    padding: const EdgeInsets.only(
+                        left: 15.0, right: 15.0, bottom: 15.0),
                     child: Row(
                       children: [
                         InkWell(
@@ -228,51 +274,55 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
                     ),
                   ),
                   // Edit button
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    // Preview.
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(
-                          top: 15,
-                          bottom: 15,
-                        ),
-                        padding: const EdgeInsets.only(
-                          left: 10,
-                          right: 10,
-                          top: 8,
-                          bottom: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColor.menuColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            _cropImage();
-                            // setState(() {
-                            //   isEditClicked = !isEditClicked;
-                            //   if (isEditClicked) {
-                            //     editTitle = "Apply";
-                            //   } else {
-                            //     editTitle = "Edit";
-                            //   }
-                            // });
-                          },
-                          child: Text(
-                            editTitle,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
+                  Visibility(
+                    visible: widget.mediaFileList != null,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      // Preview.
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(
+                            // top: 15,
+                            bottom: 15,
+                          ),
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                            top: 8,
+                            bottom: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColor.menuColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              _cropImage();
+                            },
+                            child: Text(
+                              editTitle,
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   // preview
-                  _image(),
+                  if (widget.mediaFileList != null)
+                    _image()
+                  else
+                    Center(
+                      child: SizedBox(
+                        height: 600,
+                        width: double.infinity,
+                        child: _previewPDF(widget.pdfFilePath!),
+                      ),
+                    ),
                   // print image button
                   Row(
                     // Print button
@@ -322,7 +372,7 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
                                   )),
                               Ink(
                                 child: Text(
-                                  "Print Image",
+                                  "Print ${widget.title}",
                                   style: GoogleFonts.poppins(
                                     fontSize: 16,
                                     color: Colors.white,
