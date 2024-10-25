@@ -6,8 +6,13 @@ list(APPEND FLUTTER_PLUGIN_LIST
   bonsoir_windows
   connectivity_plus
   file_selector_windows
+  firebase_auth
+  firebase_core
+  flutter_inappwebview_windows
+  flutter_secure_storage_windows
   permission_handler_windows
   printing
+  scroll_screenshot
   url_launcher_windows
 )
 

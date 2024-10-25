@@ -6,8 +6,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:printer_app/database/crud_widget.dart';
 import 'package:printer_app/database/printer_model.dart';
+import 'package:printer_app/widgets/print_frames_page.dart';
+import 'package:printer_app/widgets/print_google_drive.dart';
 import 'package:printer_app/widgets/print_photo.dart';
 import 'package:printer_app/widgets/print_web_page.dart';
+import 'package:printer_app/widgets/print_web_render.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../connect_ui.dart';
@@ -16,6 +19,7 @@ import '../database/notes_view.dart';
 import '../models/print_menu_pojo.dart';
 import '../utils/colors.dart';
 import '../utils/strings.dart';
+import 'webpage_screenshot_to_images.dart';
 
 typedef OnPickImageCallback = void Function(
     double? maxWidth, double? maxHeight, int? quality, int? limit);
@@ -178,6 +182,24 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                   title: "Pdf",
                   pdfFilePath: pdfFilePath,
                 )));
+  }
+
+  void navigateToWebView(String buttonText, String urlToOpen) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PrintWebPageWidget.withWebView(
+                  buttonText: buttonText,
+                  urlToOpen: urlToOpen,
+                )));
+  }
+
+  void navigateGoogleDrive(String buttonText, String urlToOpen) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => PrintGoogleDrivePageWidget.withGoogleDrive(
+                buttonText: buttonText)));
   }
 
   void navigateToWebPage(String buttonText) {
@@ -433,13 +455,32 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                                     builder: (context) => const NotesView()),
                               );
                             */
-
                               _openPdf();
                               break;
                             case 2: // print Web page
-                              // _launched = _launchInBrowserView(toLaunch);
+                              // navigateToWebPage("Web Page");
 
-                              navigateToWebPage("Web Page");
+                              /** Render Web Page **/
+                              /**/
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        WebpageScreenshotDisplay()),
+                              );
+
+                              /** Render Web Page **/
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) =>
+                              //           const RenderWebPageWidget.withWebPage(
+                              //             buttonText: "Render",
+                              //           )),
+                              // ).then((value) {
+                              //   // alwaysLate();
+                              //   setState(() {});
+                              // });
 
                               /*
                             Navigator.push(
@@ -453,7 +494,26 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                               });
                             */
                               break;
-                            default:
+                            case 3: // print Google Drive
+                              navigateGoogleDrive(
+                                  "Web Page", "www.googledrive.com");
+                              break;
+                            case 4: // print Web page
+                              // _launched = _launchInBrowserView(toLaunch);
+                              showFormatsBottomSheet(context);
+                              /*
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const TestDataBaseWidget()),
+                              ).then((value) {
+                                // alwaysLate();
+                                setState(() {});
+                              });
+                            */
+                              break;
+                            // default:
                           }
                         })
                       },
@@ -505,6 +565,54 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
         ),
       ),
     ]);
+  }
+
+  void showFormatsBottomSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          margin: EdgeInsets.all(10),
+          height: 200,
+          color: Colors.amber,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      height: 25,
+                      width: 25,
+                      child: Image.asset(
+                        'icons/icon_print_outline.png',
+                        // color: _selectedTab == 0
+                        //     ? AppColor.menuColor
+                        //     : AppColor.lightGreyColor,
+                      ),
+                    )
+                  ],
+                ),
+                const Text('Modal BottomSheet'),
+                ElevatedButton(
+                  child: const Text('Close BottomSheet'),
+                  onPressed: () => Navigator.pop(context),
+                  /*
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PrintFramesWidget.withFrames(
+                                              buttonText: "Frames")));
+                              */
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Row printerConnectDisconnect(

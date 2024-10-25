@@ -1,14 +1,46 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:printer_app/home.dart';
 
 import 'database/app_database.dart';
 import 'database/printer_model.dart';
 
-void main() {
-  // runApp(const MyApp());
+WebViewEnvironment? webViewEnvironment;
 
+Future main() async {
+  // runApp(const MyApp());
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp(
+  //     options: FirebaseOptions(
+  //   apiKey: 'key',
+  //   appId: 'id',
+  //   messagingSenderId: 'sendid',
+  //   projectId: 'myapp',
+  //   storageBucket: 'myapp-b9yt18.appspot.com',
+  // ));
+
+  /*web view*/
+  // await Permission.camera.request();
+  // await Permission.microphone.request();
+  // await Permission.storage.request();
+
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
+    final availableVersion = await WebViewEnvironment.getAvailableVersion();
+    assert(availableVersion != null,
+        'Failed to find an installed WebView2 runtime or non-stable Microsoft Edge installation.');
+
+    webViewEnvironment = await WebViewEnvironment.create(
+        settings: WebViewEnvironmentSettings(userDataFolder: 'custom_path'));
+  }
+
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
+  }
+  /*web view*/
+
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const MyApp());
 }
