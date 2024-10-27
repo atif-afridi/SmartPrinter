@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:printer_app/database/crud_widget.dart';
@@ -19,6 +20,9 @@ import '../database/notes_view.dart';
 import '../models/print_menu_pojo.dart';
 import '../utils/colors.dart';
 import '../utils/strings.dart';
+import 'multiple_formats/convert_to_pdf.dart';
+import 'multiple_formats/image_splitter.dart';
+import 'print_multiple_photos.dart';
 import 'webpage_screenshot_to_images.dart';
 
 typedef OnPickImageCallback = void Function(
@@ -499,19 +503,19 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                                   "Web Page", "www.googledrive.com");
                               break;
                             case 4: // print Web page
-                              // _launched = _launchInBrowserView(toLaunch);
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) =>
+                              //           PrintMultiplePhotosWidget
+                              //               .withMultiplePhotos(
+                              //                   buttonText: "multiple")),
+                              // ).then((value) {
+                              //   // alwaysLate();
+                              //   setState(() {});
+                              // });
+
                               showFormatsBottomSheet(context);
-                              /*
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const TestDataBaseWidget()),
-                              ).then((value) {
-                                // alwaysLate();
-                                setState(() {});
-                              });
-                            */
                               break;
                             // default:
                           }
@@ -572,31 +576,110 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
       context: context,
       builder: (BuildContext context) {
         return Container(
-          margin: EdgeInsets.all(10),
-          height: 200,
-          color: Colors.amber,
-          child: Center(
+          margin: EdgeInsets.all(20),
+          // height: 200,
+          // color: Colors.amber,
+          child: Container(
+            padding: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      height: 25,
-                      width: 25,
-                      child: Image.asset(
-                        'icons/icon_print_outline.png',
-                        // color: _selectedTab == 0
-                        //     ? AppColor.menuColor
-                        //     : AppColor.lightGreyColor,
-                      ),
-                    )
-                  ],
+                // Multiple Photos on Same page
+                Container(
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PrintMultiplePhotosWidget.withMultiplePhotos(
+                                    buttonText: "multiple")),
+                      )
+                          // ConvertToPdfPage())
+                          .then((value) {
+                        // alwaysLate();
+                        setState(() {});
+                      });
+                      // Navigator.pop(context);
+                    },
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: 25,
+                          width: 25,
+                          child: SvgPicture.asset("icons/multiple_photo.svg",
+                              // colorFilter:
+                              //     ColorFilter.mode(Colors.red, BlendMode.srcIn),
+                              semanticsLabel: 'A red up arrow'),
+                        ),
+                        Container(
+                            padding: EdgeInsets.only(left: 20),
+                            child: const Text('Multiple Photos on Same page')),
+                      ],
+                    ),
+                  ),
                 ),
-                const Text('Modal BottomSheet'),
+                // Print as a Poster
+                Container(
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageSplitter(
+                              rows: 3,
+                              columns: 3,
+                              imageUrl:
+                                  "https://cdn.pixabay.com/photo/2024/05/27/12/27/gargoyle-8791108_1280.jpg",
+                            ),
+                          )).then((value) {
+                        // alwaysLate();
+                        setState(() {});
+                      });
+                      // Navigator.pop(context);
+                    },
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: 25,
+                          width: 25,
+                          child: SvgPicture.asset("icons/print_as_poster.svg",
+                              // colorFilter:
+                              //     ColorFilter.mode(Colors.red, BlendMode.srcIn),
+                              semanticsLabel: 'A red up arrow'),
+                        ),
+                        Container(
+                            padding: EdgeInsets.only(left: 20),
+                            child: const Text('Print as a Poster')),
+                      ],
+                    ),
+                  ),
+                ),
+                // Print with Frame
+                Container(
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        height: 25,
+                        width: 25,
+                        child: SvgPicture.asset("icons/print_with_frame.svg",
+                            // colorFilter:
+                            //     ColorFilter.mode(Colors.red, BlendMode.srcIn),
+                            semanticsLabel: 'A red up arrow'),
+                      ),
+                      Container(
+                          padding: EdgeInsets.only(left: 20),
+                          child: const Text('Print with Frame')),
+                    ],
+                  ),
+                ),
+                //////////////////
                 ElevatedButton(
-                  child: const Text('Close BottomSheet'),
+                  child: const Text('Cancel'),
                   onPressed: () => Navigator.pop(context),
                   /*
                               Navigator.push(

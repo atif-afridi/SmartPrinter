@@ -5,22 +5,19 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:printer_app/home.dart';
 
-import 'database/app_database.dart';
-import 'database/printer_model.dart';
-
 WebViewEnvironment? webViewEnvironment;
 
 Future main() async {
   // runApp(const MyApp());
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //     options: FirebaseOptions(
-  //   apiKey: 'key',
-  //   appId: 'id',
-  //   messagingSenderId: 'sendid',
-  //   projectId: 'myapp',
-  //   storageBucket: 'myapp-b9yt18.appspot.com',
-  // ));
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+    apiKey: 'key',
+    appId: 'id',
+    messagingSenderId: 'sendid',
+    projectId: 'myapp',
+    storageBucket: 'myapp-b9yt18.appspot.com',
+  ));
 
   /*web view*/
   // await Permission.camera.request();

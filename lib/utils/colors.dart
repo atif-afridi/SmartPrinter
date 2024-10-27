@@ -10,6 +10,7 @@ class AppColor {
   static const Color skyBlueText = Color(0xFF16bed3);
   static const Color menuColor = Color(0xFF17BDD3);
   static const Color adColor = Color(0xFF17BDD3);
+  static const Color borderColor = Color(0xFFD9D9D9);
 
   static const Gradient linearGradient = LinearGradient(
     begin: Alignment(0.0, 0.0),

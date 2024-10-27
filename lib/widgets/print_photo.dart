@@ -63,41 +63,45 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
   Future<void> _printPdf() async {
     try {
       final doc = pw.Document();
+      var photoOrPdf = widget.pdfFilePath ?? widget.mediaFileList![0].path;
+      var photoBytes = await File(photoOrPdf).readAsBytes();
+      final pageFormat = PdfPageFormat.a4;
 
-      doc.addPage(pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          build: (pw.Context context) {
-            return pw.Center(
-              child: pw.Text('Hello Jimmy'),
-            );
-          }));
+      // doc.addPage(pw.Page(
+      //     pageFormat: PdfPageFormat.a4,
+      //     build: (pw.Context context) {
+      //       return pw.Center(
+      //         child: pw.Text('Hello Jimmy'),
+      //       );
+      //     }));
 
       await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => doc.save(),
+        onLayout: (PdfPageFormat format) async => photoBytes,
       );
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> _capturePng(BuildContext ctx) async {
+  Future<void> _printPhoto(BuildContext ctx) async {
     try {
       final doc = pw.Document();
-      var photoBytes = await File(widget.mediaFileList![0].path).readAsBytes();
+      var photoOrPdf = widget.pdfFilePath ?? widget.mediaFileList![0].path;
+      var photoBytes = await File(photoOrPdf).readAsBytes();
       final pageFormat = PdfPageFormat.a4;
-
-      print(MediaQuery.of(ctx).size.height);
 
       doc.addPage(pw.Page(
           pageFormat: pageFormat,
-          orientation: pw.PageOrientation.landscape,
+          // orientation: pw.PageOrientation.portrait,
           build: (pw.Context context) {
-            return pw.Center(
+            // return pw.Center(
+            return pw.FullPage(
+              ignoreMargins: true,
               child: pw.Image(
                 // pw.MemoryImage(_imageBytes),
                 pw.MemoryImage(photoBytes),
-                width: pageFormat.height - 20,
-                fit: pw.BoxFit.fitWidth,
+                // width: pageFormat.height - 20,
+                // fit: pw.BoxFit.fitWidth,
               ),
             );
           }));
@@ -110,6 +114,13 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
       debugPrint("Error printing photo $e");
     }
   }
+
+// Future<void> _printPdf() async {
+//     try {
+//       final doc = pw.Document();
+//       var photoOrPdf = widget.mediaFileList![0].path;
+//       var photoBytes = await File(photoOrPdf).readAsBytes();
+//       final pageFormat = PdfPageFormat.a4;
 
   @override
   void initState() {
@@ -342,7 +353,9 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
                             print("isPrinterConnected : $isPrinterConnected");
                             if (isPrinterConnected) {
                               // print photo...
-                              _capturePng(context);
+                              widget.pdfFilePath == null
+                                  ? _printPhoto(context)
+                                  : _printPdf();
                             } else {
                               Navigator.push(
                                 context,
