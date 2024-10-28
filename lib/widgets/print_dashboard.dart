@@ -8,6 +8,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:printer_app/database/crud_widget.dart';
 import 'package:printer_app/database/printer_model.dart';
 import 'package:printer_app/widgets/print_frames_page.dart';
+import 'package:printer_app/widgets/print_frames_photo_patch.dart';
 import 'package:printer_app/widgets/print_google_drive.dart';
 import 'package:printer_app/widgets/print_photo.dart';
 import 'package:printer_app/widgets/print_web_page.dart';
@@ -22,6 +23,7 @@ import '../utils/colors.dart';
 import '../utils/strings.dart';
 import 'multiple_formats/convert_to_pdf.dart';
 import 'multiple_formats/image_splitter.dart';
+import 'print_frames_photo.dart';
 import 'print_multiple_photos.dart';
 import 'webpage_screenshot_to_images.dart';
 
@@ -633,7 +635,7 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                               rows: 3,
                               columns: 3,
                               imageUrl:
-                                  "https://cdn.pixabay.com/photo/2024/05/27/12/27/gargoyle-8791108_1280.jpg",
+                                  "https://images.pexels.com/photos/1324803/pexels-photo-1324803.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
                             ),
                           )).then((value) {
                         // alwaysLate();
@@ -661,20 +663,32 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                 // Print with Frame
                 Container(
                   padding: EdgeInsets.only(top: 10, bottom: 10),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        height: 25,
-                        width: 25,
-                        child: SvgPicture.asset("icons/print_with_frame.svg",
-                            // colorFilter:
-                            //     ColorFilter.mode(Colors.red, BlendMode.srcIn),
-                            semanticsLabel: 'A red up arrow'),
-                      ),
-                      Container(
-                          padding: EdgeInsets.only(left: 20),
-                          child: const Text('Print with Frame')),
-                    ],
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                // PrintFramesPhotoWidget.withMultiplePhotos(
+                                //     buttonText: "multiple")
+                                DynamicNinePatchFrame(),
+                          ));
+                    },
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: 25,
+                          width: 25,
+                          child: SvgPicture.asset("icons/print_with_frame.svg",
+                              // colorFilter:
+                              //     ColorFilter.mode(Colors.red, BlendMode.srcIn),
+                              semanticsLabel: 'A red up arrow'),
+                        ),
+                        Container(
+                            padding: EdgeInsets.only(left: 20),
+                            child: const Text('Print with Frame')),
+                      ],
+                    ),
                   ),
                 ),
                 //////////////////
