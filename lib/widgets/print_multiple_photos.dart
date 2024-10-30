@@ -4,11 +4,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:printer_app/utils/colors.dart';
-import 'package:printer_app/widgets/multiple_formats/image_splitter.dart';
 import '../database/app_database.dart';
 import '../models/multi_print_menu.dart';
-import 'multiple_formats/convert_to_pdf.dart';
-import 'multiple_formats/dynamic_grid_widget.dart';
 import 'print_multiple_photos_detail.dart';
 
 class PrintMultiplePhotosWidget extends StatefulWidget {
@@ -105,7 +102,7 @@ class _PrintPhotoWidgetState extends State<PrintMultiplePhotosWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColor.lightBlueBg,
         body: Padding(
           padding: const EdgeInsets.only(),
           child: Column(
@@ -129,22 +126,25 @@ class _PrintPhotoWidgetState extends State<PrintMultiplePhotosWidget> {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(right: 40),
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        "Preview",
-                        style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            // fontWeight: FontWeight.w900,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 20),
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(right: 40),
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          "Select Layout",
+                          style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              // fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 20),
+                        ),
                       ),
                     )
                   ],
                 ),
               ),
+              // app content
               // grids
               Expanded(
                 child: SingleChildScrollView(
@@ -174,29 +174,31 @@ class _PrintPhotoWidgetState extends State<PrintMultiplePhotosWidget> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      // MultiplePhotosDetailWidget
-                                      //     .withMultiplePhotos(
-                                      //         multiPrintItem:
-                                      //             multiPrintList[index])
-                                      /**/
-                                      ConvertToPdfPage(),
-                                  /**/
-                                  //     ImageSplitter(
-                                  //   rows: 3,
-                                  //   columns: 3,
-                                  //   imageUrl:
-                                  //       "https://cdn.pixabay.com/photo/2024/05/27/12/27/gargoyle-8791108_1280.jpg",
-                                  // ),
-                                  // ),
-                                  /**/
-                                  // DynamicGridWidget()),
-                                ),
+                                    builder: (context) =>
+                                        MultiplePhotosDetailWidget
+                                            .withMultiplePhotos(
+                                                multiPrintItem:
+                                                    multiPrintList[index])
+                                    /**/
+                                    // DynamicGridWidget(),
+                                    // ConvertToPdfPage(),
+                                    /**/
+                                    //     ImageSplitter(
+                                    //   rows: 3,
+                                    //   columns: 3,
+                                    //   imageUrl:
+                                    //       "https://cdn.pixabay.com/photo/2024/05/27/12/27/gargoyle-8791108_1280.jpg",
+                                    // ),
+                                    // ),
+                                    /**/
+                                    // DynamicGridWidget()),
+                                    ),
                               )
                             },
                             child: Container(
-                              margin: EdgeInsets.only(left: 10, right: 10),
-                              padding: EdgeInsets.only(top: 10, bottom: 10),
+                              margin: EdgeInsets.only(
+                                  left: 15, right: 15, bottom: 15),
+                              padding: EdgeInsets.only(top: 15, bottom: 15),
                               // width: 150,
                               // height: 300,
                               decoration: BoxDecoration(
@@ -207,6 +209,7 @@ class _PrintPhotoWidgetState extends State<PrintMultiplePhotosWidget> {
                                 ),
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(20)),
+                                color: Colors.white,
                               ),
                               child: Container(
                                 margin: EdgeInsets.only(left: 10, right: 10),
@@ -236,7 +239,7 @@ class _PrintPhotoWidgetState extends State<PrintMultiplePhotosWidget> {
                                     else
                                       Spacer(),
                                     /////
-                                    ///
+                                    /* title and scale */
                                     Container(
                                       margin: EdgeInsets.only(top: 5),
                                       child: Column(
@@ -313,14 +316,14 @@ class _PrintPhotoWidgetState extends State<PrintMultiplePhotosWidget> {
         Container(
           margin: EdgeInsets.only(bottom: 10),
           width: MediaQuery.of(context).size.width * 0.25,
-          height: MediaQuery.of(context).size.height * 0.1,
+          height: MediaQuery.of(context).size.height * 0.06,
           color: multiPrintList[index].isSelected
               ? AppColor.skyBlue
               : AppColor.borderColor,
         ),
         Container(
-          width: 100,
-          height: 50,
+          width: MediaQuery.of(context).size.width * 0.25,
+          height: MediaQuery.of(context).size.height * 0.06,
           color: multiPrintList[index].isSelected
               ? AppColor.skyBlue
               : AppColor.borderColor,
@@ -549,16 +552,20 @@ class _PrintPhotoWidgetState extends State<PrintMultiplePhotosWidget> {
           children: [
             Container(
               margin: EdgeInsets.only(bottom: 8),
-              width: 50,
-              height: 30,
+              width: MediaQuery.of(context).size.width * 0.12,
+              height: MediaQuery.of(context).size.height * 0.03,
+              // width: 50,
+              // height: 30,
               color: multiPrintList[index].isSelected
                   ? AppColor.skyBlue
                   : AppColor.borderColor,
             ),
             Container(
               margin: EdgeInsets.only(bottom: 8, left: 10),
-              width: 50,
-              height: 30,
+              width: MediaQuery.of(context).size.width * 0.12,
+              height: MediaQuery.of(context).size.height * 0.03,
+              // width: 50,
+              // height: 30,
               color: multiPrintList[index].isSelected
                   ? AppColor.skyBlue
                   : AppColor.borderColor,
@@ -570,16 +577,20 @@ class _PrintPhotoWidgetState extends State<PrintMultiplePhotosWidget> {
           children: [
             Container(
               margin: EdgeInsets.only(bottom: 8),
-              width: 50,
-              height: 30,
+              width: MediaQuery.of(context).size.width * 0.12,
+              height: MediaQuery.of(context).size.height * 0.03,
+              // width: 50,
+              // height: 30,
               color: multiPrintList[index].isSelected
                   ? AppColor.skyBlue
                   : AppColor.borderColor,
             ),
             Container(
               margin: EdgeInsets.only(bottom: 8, left: 10),
-              width: 50,
-              height: 30,
+              width: MediaQuery.of(context).size.width * 0.12,
+              height: MediaQuery.of(context).size.height * 0.03,
+              // width: 50,
+              // height: 30,
               color: multiPrintList[index].isSelected
                   ? AppColor.skyBlue
                   : AppColor.borderColor,
@@ -591,16 +602,20 @@ class _PrintPhotoWidgetState extends State<PrintMultiplePhotosWidget> {
           children: [
             Container(
               margin: EdgeInsets.only(bottom: 8),
-              width: 50,
-              height: 30,
+              width: MediaQuery.of(context).size.width * 0.12,
+              height: MediaQuery.of(context).size.height * 0.03,
+              // width: 50,
+              // height: 30,
               color: multiPrintList[index].isSelected
                   ? AppColor.skyBlue
                   : AppColor.borderColor,
             ),
             Container(
               margin: EdgeInsets.only(bottom: 8, left: 10),
-              width: 50,
-              height: 30,
+              width: MediaQuery.of(context).size.width * 0.12,
+              height: MediaQuery.of(context).size.height * 0.03,
+              // width: 50,
+              // height: 30,
               color: multiPrintList[index].isSelected
                   ? AppColor.skyBlue
                   : AppColor.borderColor,
@@ -612,16 +627,20 @@ class _PrintPhotoWidgetState extends State<PrintMultiplePhotosWidget> {
           children: [
             Container(
               // margin: EdgeInsets.only(bottom: 10),
-              width: 50,
-              height: 30,
+              width: MediaQuery.of(context).size.width * 0.12,
+              height: MediaQuery.of(context).size.height * 0.03,
+              // width: 50,
+              // height: 30,
               color: multiPrintList[index].isSelected
                   ? AppColor.skyBlue
                   : AppColor.borderColor,
             ),
             Container(
               margin: EdgeInsets.only(left: 10),
-              width: 50,
-              height: 30,
+              width: MediaQuery.of(context).size.width * 0.12,
+              height: MediaQuery.of(context).size.height * 0.03,
+              // width: 50,
+              // height: 30,
               color: multiPrintList[index].isSelected
                   ? AppColor.skyBlue
                   : AppColor.borderColor,

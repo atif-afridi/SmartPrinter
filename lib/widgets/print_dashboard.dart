@@ -4,27 +4,26 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:open_filex/open_filex.dart';
-import 'package:printer_app/database/crud_widget.dart';
 import 'package:printer_app/database/printer_model.dart';
-import 'package:printer_app/widgets/print_frames_page.dart';
+import 'package:printer_app/widgets/multiple_formats/image_notes.dart';
+import 'package:printer_app/widgets/print_clipboard.dart';
 import 'package:printer_app/widgets/print_frames_photo_patch.dart';
 import 'package:printer_app/widgets/print_google_drive.dart';
 import 'package:printer_app/widgets/print_photo.dart';
 import 'package:printer_app/widgets/print_web_page.dart';
-import 'package:printer_app/widgets/print_web_render.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../connect_ui.dart';
 import '../database/app_database.dart';
-import '../database/notes_view.dart';
 import '../models/print_menu_pojo.dart';
 import '../utils/colors.dart';
 import '../utils/strings.dart';
-import 'multiple_formats/convert_to_pdf.dart';
 import 'multiple_formats/image_splitter.dart';
-import 'print_frames_photo.dart';
+import 'print_create_quizzes.dart';
+import 'print_help_center.dart';
 import 'print_multiple_photos.dart';
+import 'print_notes.dart';
+import 'print_quizzes.dart';
 import 'webpage_screenshot_to_images.dart';
 
 typedef OnPickImageCallback = void Function(
@@ -504,22 +503,62 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                               navigateGoogleDrive(
                                   "Web Page", "www.googledrive.com");
                               break;
-                            case 4: // print Web page
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) =>
-                              //           PrintMultiplePhotosWidget
-                              //               .withMultiplePhotos(
-                              //                   buttonText: "multiple")),
-                              // ).then((value) {
-                              //   // alwaysLate();
-                              //   setState(() {});
-                              // });
-
+                            case 4: // print Formats menu
                               showFormatsBottomSheet(context);
                               break;
-                            // default:
+                            case 5: // print labels
+                              // showFormatsBottomSheet(context);
+                              break;
+                            case 6: // print emails
+
+                              break;
+                            case 7: // print notes
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    // builder: (context) => const PrintNotes()),
+                                    builder: (context) => PrinterNotes()),
+                              ).then((value) {
+                                // alwaysLate();
+                                setState(() {});
+                              });
+                              break;
+                            case 8: // print quizzes
+                              //
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => QuizCreationWidget()),
+                              ).then((value) {
+                                // alwaysLate();
+                                setState(() {});
+                              });
+                              break;
+                            case 9: // print clip_board
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PrintClipboardWidget()),
+                              ).then((value) {
+                                // alwaysLate();
+                                setState(() {});
+                              });
+                              break;
+                            case 10: // print calendar
+
+                              break;
+                            case 11: // print help_center
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PrintHelpCenter()),
+                              ).then((value) {
+                                // alwaysLate();
+                                setState(() {});
+                              });
+
+                              break;
                           }
                         })
                       },
@@ -634,8 +673,6 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                             builder: (context) => ImageSplitter(
                               rows: 3,
                               columns: 3,
-                              imageUrl:
-                                  "https://images.pexels.com/photos/1324803/pexels-photo-1324803.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
                             ),
                           )).then((value) {
                         // alwaysLate();

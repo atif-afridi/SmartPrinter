@@ -1,14 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ninepatch_image/ninepatch_image.dart';
 import 'package:printer_app/utils/colors.dart';
 import '../database/app_database.dart';
-import '../models/multi_print_menu.dart';
-import 'multiple_formats/convert_to_pdf.dart';
 
 class PrintFramesPhotoWidget extends StatefulWidget {
   // whats the usage of 'final' before data_type

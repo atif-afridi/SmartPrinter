@@ -1,52 +1,21 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart'; // Make sure to include the image package in your pubspec.yaml
 
-import 'dart:io';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image/image.dart' as img; // Import for image manipulation
-import 'package:image_picker/image_picker.dart';
-import 'package:printing/printing.dart';
+// Import for image manipulation
 
 import '../../utils/colors.dart';
 
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
-import 'package:image_picker/image_picker.dart';
-import 'package:flutter/services.dart';
-import 'dart:io';
-
-class ImageSplitter extends StatefulWidget {
-  final int rows;
-  final int columns;
-  final double horizontalSpace;
-  final double padding;
-
-  const ImageSplitter({
-    Key? key,
-    required this.rows,
-    required this.columns,
-    this.horizontalSpace = 0.0,
-    this.padding = 4.0,
-  }) : super(key: key);
+class PrintNotes extends StatefulWidget {
+  const PrintNotes({Key? key}) : super(key: key);
 
   @override
-  State<ImageSplitter> createState() => _ImageSplitterState();
+  State<PrintNotes> createState() => _PrintNotesState();
 }
 
-class _ImageSplitterState extends State<ImageSplitter> {
+class _PrintNotesState extends State<PrintNotes> {
   List<Image> imageList = [];
   XFile? selectedImage;
   final ImagePicker _picker = ImagePicker();
@@ -55,94 +24,6 @@ class _ImageSplitterState extends State<ImageSplitter> {
   @override
   void initState() {
     super.initState();
-    _loadDefaultImage();
-  }
-
-  // Load default image from assets and split it
-  Future<void> _loadDefaultImage() async {
-    ByteData byteData = await rootBundle
-        .load('icons/splitter_default.png'); // Provide your image path here
-    Uint8List bytes = byteData.buffer.asUint8List();
-    _splitAndSetImage(bytes);
-  }
-
-  // Method to pick an image from the gallery on tap
-  Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        selectedImage = image;
-      });
-      Uint8List bytes = await File(selectedImage!.path).readAsBytes();
-      _splitAndSetImage(bytes);
-    }
-  }
-
-  // Split image and update the image list
-  void _splitAndSetImage(Uint8List bytes) {
-    List<Image> parts = splitImage(bytes, widget.rows, widget.columns);
-    setState(() {
-      imageList = parts;
-    });
-  }
-
-  // Function to capture and print the split image grid
-  Future<void> printImageGrid() async {
-    try {
-      RenderRepaintBoundary boundary =
-          _gridKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-      ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
-      Uint8List pngBytes = byteData!.buffer.asUint8List();
-
-      final pdf = pw.Document();
-      final imageMemory = pw.MemoryImage(pngBytes);
-
-      pdf.addPage(
-        pw.Page(
-          build: (pw.Context context) {
-            // A4 dimensions in points (1 point = 1/72 inch)
-            final pdfWidth = PdfPageFormat.a4.width;
-            final pdfHeight = PdfPageFormat.a4.height;
-
-            // Calculate the aspect ratio of the image
-            double aspectRatio = image.width / image.height;
-
-            // Determine the width and height to scale the image without cropping
-            double scaledWidth, scaledHeight;
-            if (aspectRatio > pdfWidth / pdfHeight) {
-              // Width is limiting factor
-              scaledWidth = pdfWidth;
-              scaledHeight = pdfWidth / aspectRatio;
-            } else {
-              // Height is limiting factor
-              scaledHeight = pdfHeight;
-              scaledWidth = pdfHeight * aspectRatio;
-            }
-
-            return pw.Container(
-              width: pdfWidth,
-              height: pdfHeight,
-              child: pw.Center(
-                child: pw.Image(
-                  imageMemory,
-                  width: scaledWidth,
-                  height: scaledHeight,
-                  fit: pw.BoxFit.contain,
-                ),
-              ),
-            );
-          },
-          pageFormat: PdfPageFormat.a4,
-        ),
-      );
-      await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => pdf.save(),
-      );
-    } catch (e) {
-      print("Error capturing image for print: $e");
-    }
   }
 
   @override
@@ -177,7 +58,7 @@ class _ImageSplitterState extends State<ImageSplitter> {
                         margin: const EdgeInsets.only(right: 40),
                         child: const Text(
                           textAlign: TextAlign.center,
-                          "Preview",
+                          "Notes",
                           style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.bold,
@@ -195,38 +76,8 @@ class _ImageSplitterState extends State<ImageSplitter> {
                   children: [
                     Expanded(
                       child: GestureDetector(
-                        onTap: _pickImage,
-                        child: Padding(
-                          padding: EdgeInsets.all(widget.padding),
-                          child: RepaintBoundary(
-                            key: _gridKey, // Add RepaintBoundary with key
-                            child: GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: widget.columns,
-                                mainAxisSpacing: widget.padding,
-                                crossAxisSpacing: widget.horizontalSpace,
-                                childAspectRatio: 1, // Keep the images square
-                              ),
-                              itemCount: imageList.length,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  padding: EdgeInsets.all(widget.padding),
-                                  child: imageList.isNotEmpty
-                                      ? imageList[index]
-                                      : Center(
-                                          child: Text(
-                                            "Loading...",
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                          ),
-                                        ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
+                        // onTap: _pickImage,
+                        child: Placeholder(),
                       ),
                     ),
                     // Action Buttons
@@ -244,7 +95,7 @@ class _ImageSplitterState extends State<ImageSplitter> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: InkWell(
-                            onTap: _pickImage,
+                            // onTap: _pickImage,
                             child: Container(
                               padding: const EdgeInsets.only(
                                 left: 20,
@@ -273,7 +124,7 @@ class _ImageSplitterState extends State<ImageSplitter> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: InkWell(
-                            onTap: printImageGrid, // Call print function
+                            // onTap: printImageGrid, // Call print function
                             child: Container(
                               padding: const EdgeInsets.only(
                                 left: 20,

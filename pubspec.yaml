@@ -83,6 +83,9 @@ dependencies:
   firebase_core: ^3.6.0
   image_to_pdf_converter: ^0.0.1
   ninepatch_image: ^0.0.4
+  # text_editor_notes
+  flutter_quill: ^10.8.5
+  fluttertoast: ^8.2.8
 
   
 
@@ -108,11 +111,10 @@ flutter:
           #  - asset: fonts/Poppins-Black.ttf
            - asset: fonts/Poppins-Medium.ttf
              weight: 400
-          #  - asset: fonts/Poppins-SemiBold.ttf'
-          #    weight: 600
-            #  weight: 700
-          #  - asset: fonts/Montserrat-Bold.ttf
-          #    weight: 700
+       - family: OpenSans
+         fonts:
+           - asset: fonts/opensans-medium.ttf
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
