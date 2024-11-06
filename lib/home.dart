@@ -7,6 +7,7 @@ import 'database/app_database.dart';
 import 'database/printer_model.dart';
 import 'widgets/print_dashboard.dart';
 import 'widgets/scan_document.dart';
+import 'widgets/settings_widget.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({super.key, required this.title});
@@ -37,7 +38,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       case 1:
         return ScanDocumentWidget(title: "Smart Printer & Scanner");
       default:
-        return Placeholder();
+        return SettingsWidget();
     }
   }
 
