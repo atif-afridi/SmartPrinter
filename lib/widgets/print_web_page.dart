@@ -788,7 +788,7 @@ _screenshotController
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const ConnectUi(),
+                                              const ConnectUiWidget(),
                                         ),
                                       ).then((value) {
                                         setState(() {});

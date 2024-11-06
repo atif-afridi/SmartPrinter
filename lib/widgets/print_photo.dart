@@ -349,7 +349,7 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: InkWell(
-                          onTap: () {
+                          onTap: () async {
                             print("isPrinterConnected : $isPrinterConnected");
                             if (isPrinterConnected) {
                               // print photo...
@@ -357,14 +357,27 @@ class _PrintPhotoWidgetState extends State<PrintPhotoWidget> {
                                   ? _printPhoto(context)
                                   : _printPdf();
                             } else {
+                              /*
+                              // Start the flow by navigating to ConnectUiWidget
+                              final result = await Navigator.pushNamed(
+                                  context, 'ConnectUiWidget');
+
+                              // Check if the result indicates the printer was connected
+                              if (result == "printer connected") {
+                                print('Printer connection status: $result');
+                                // Update UI or perform any additional actions here
+                              }
+                              */
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const ConnectUi(),
+                                  builder: (context) => const ConnectUiWidget(),
                                 ),
                               ).then((value) {
                                 setState(() {});
                               });
+                              /* OLD CODE */
                             }
                           },
                           child: Container(

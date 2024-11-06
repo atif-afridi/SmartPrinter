@@ -407,7 +407,7 @@ class _PrintPhotoWidgetState extends State<RenderWebPageWidget> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const ConnectUi(),
+                                              const ConnectUiWidget(),
                                         ),
                                       ).then((value) {
                                         setState(() {});

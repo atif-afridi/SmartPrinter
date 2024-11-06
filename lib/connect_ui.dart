@@ -5,14 +5,14 @@ import 'package:printer_app/discover_printer.dart';
 
 import 'utils/strings.dart';
 
-class ConnectUi extends StatefulWidget {
-  const ConnectUi({super.key});
+class ConnectUiWidget extends StatefulWidget {
+  const ConnectUiWidget({super.key});
 
   @override
-  State<ConnectUi> createState() => _ConnectUiState();
+  State<ConnectUiWidget> createState() => _ConnectUiWidgetState();
 }
 
-class _ConnectUiState extends State<ConnectUi> {
+class _ConnectUiWidgetState extends State<ConnectUiWidget> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -108,7 +108,10 @@ class _ConnectUiState extends State<ConnectUi> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const DiscoverUi(),
+        builder: (context) => DiscoverUi(
+          onAction: () {},
+          onClose: () {},
+        ),
       ),
     );
   }

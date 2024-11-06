@@ -107,7 +107,10 @@ class _PrintPreviewUi extends State<PrintPreviewUi> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const DiscoverUi(),
+        builder: (context) => DiscoverUi(
+          onAction: () {},
+          onClose: () {},
+        ),
       ),
     );
   }

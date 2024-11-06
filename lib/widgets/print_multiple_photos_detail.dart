@@ -218,7 +218,7 @@ class _PrintPhotoWidgetState extends State<MultiplePhotosDetailWidget> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const ConnectUi(),
+                              builder: (context) => const ConnectUiWidget(),
                             ),
                           ).then((value) {
                             setState(() {});

@@ -19,10 +19,17 @@ import 'package:printer_app/utils/strings.dart';
 import 'database/app_database.dart';
 import 'database/printer_model.dart';
 import 'home.dart';
-import 'widgets/print_dashboard.dart';
 
 class DiscoverUi extends StatefulWidget {
-  const DiscoverUi({super.key});
+  //
+  final VoidCallback onAction;
+  final VoidCallback onClose;
+
+  const DiscoverUi({
+    super.key,
+    required this.onAction,
+    required this.onClose,
+  });
 
   @override
   State<DiscoverUi> createState() => _DiscoverUiState();

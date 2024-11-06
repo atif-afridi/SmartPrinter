@@ -235,7 +235,7 @@ class _DynamicNinePatchFrameState extends State<DynamicNinePatchFrame> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ConnectUi()),
+                              builder: (context) => const ConnectUiWidget()),
                         ).then((_) => setState(() {}));
                       }
                     },

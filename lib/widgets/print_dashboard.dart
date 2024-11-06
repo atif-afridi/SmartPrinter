@@ -771,7 +771,7 @@ class _PrintDashboardWidgetState extends State<PrintDashboardWidget> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ConnectUi(),
+                    builder: (context) => const ConnectUiWidget(),
                   ),
                 ).then((value) {
                   // alwaysLate();
